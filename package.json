@@ -24,7 +24,7 @@
         "url": "http://github.com/Constellation/ibrik.git"
     },
     "dependencies": {
-        "coffee-script": "~ 1.6.3",
+        "coffee-script": "~ 1.7.1",
         "istanbul": "*",
         "optimist": "*",
         "escodegen": "*",
