@@ -48,6 +48,6 @@
     "scripts": {
       "test": "mocha --compilers coffee:coffee-script/register",  
       "build": "make build",
-      "watch": "make watch",
+      "watch": "make watch"
     }
 }
