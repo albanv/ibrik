@@ -49,6 +49,5 @@
       "test": "mocha --compilers coffee:coffee-script/register",  
       "build": "make build",
       "watch": "make watch",
-      "release": "npm run-script build && npm publish ."
     }
 }
