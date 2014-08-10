@@ -25,5 +25,8 @@ $(LIBDIR)/%.js: $(SRCDIR)/%.coffee $(LIBDIR)
 clean:
 	@rm -r $(LIBDIR)
 
+publish: build
+	npm publish .
+
 watch:
 	$(WATCH) $(LIBDIR) $(SRCDIR)

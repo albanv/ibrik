@@ -1,4 +1,4 @@
-#  Copyright (C) 2012 Yusuke Suzuki <utatane.tea@gmail.com>
+#  Copyright (C) 2014 Yusuke Suzuki <utatane.tea@gmail.com>
 #
 #  Redistribution and use in source and binary forms, with or without
 #  modification, are permitted provided that the following conditions are met:
@@ -25,6 +25,8 @@ Module = require 'module'
 istanbul = require 'istanbul'
 coffee = require 'coffee-script'
 
+# register loader for coffee-script-redux
+do coffee.register
 originalLoader = require.extensions['.coffee']
 originalJSLoader = null
 
@@ -42,6 +44,7 @@ transformFn = (matcher, transformer, verbose) ->
                 changed = yes
             catch ex
                 console.error 'Transformation error; return original code'
+                console.error ex.stack
                 console.error ex
                 console.error ex.stack
                 transformed = code

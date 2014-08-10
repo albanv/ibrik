@@ -27,8 +27,8 @@ root = path.join __dirname, '..'
 coffee = require 'coffee-script-redux'
 compiler = path.join(root, 'node_modules', '.bin', 'coffee')
 
-libdir = path.join root, process.argv[3]
-srcdir = path.join root, process.argv[4]
+libdir = path.join root, '' + process.argv[2]
+srcdir = path.join root, '' + process.argv[3]
 watchers = []
 
 if not fs.watch
@@ -51,21 +51,24 @@ fs.mkdir libdir, ->
                 compile src, dst
 
         refresh = ->
+            console.log 'watch', srcdir
             watcher.close() for watcher in watchers
             fs.readdir srcdir, (err, files) ->
+                console.log files
                 for file in files
-                    console.log file
                     do ->
                         src = path.join srcdir, file
                         dst = path.join libdir, "#{path.basename file, '.coffee'}.js"
                         watcher = fs.watch src, (event, filename) ->
+                            console.log 'starting...', event
                             if event is 'change'
                                 compile src, dst
                         watchers.push watcher
 
         # notify directory file list change
-        fs.watch srcdir, (event, filename) ->
-            do refresh
+        # fs.watch srcdir, (event, filename) ->
+        #     console.log event
+        #     do refresh
 
         do refresh
 

@@ -1,4 +1,4 @@
-#  Copyright (C) 2012 Yusuke Suzuki <utatane.tea@gmail.com>
+#  Copyright (C) 2014 Yusuke Suzuki <utatane.tea@gmail.com>
 #
 #  Redistribution and use in source and binary forms, with or without
 #  modification, are permitted provided that the following conditions are met:
@@ -31,7 +31,6 @@ ibrik = require './ibrik'
 istanbul = require 'istanbul'
 mkdirp = require 'mkdirp'
 which = require 'which'
-fileset = require 'fileset'
 
 existsSync = fs.existsSync or path.existsSync
 
@@ -53,7 +52,7 @@ module.exports = (opts, callback) ->
     if not opts['default-excludes']? or opts['default-excludes']
         excludes = ['**/node_modules/**', '**/test/**', '**/tests/**']
 
-    reportingDir = opts.dir or path.resolve process.cwd(), 'coverage'
+    reportingDir = '' + (opts.dir or path.resolve process.cwd(), 'coverage')
 
     mkdirp.sync reportingDir
 
@@ -80,7 +79,7 @@ module.exports = (opts, callback) ->
         includes: ['**/*.coffee']
         excludes
     }, (err, matchFn) ->
-        return callback err if err
+        return callback(err, null) if err
 
         coverageVar = "$$cov_#{Date.now()}$$"
         instrumenter = new ibrik.Instrumenter coverageVariable: coverageVar
@@ -94,21 +93,21 @@ module.exports = (opts, callback) ->
         process.once 'exit', ->
             file = path.resolve reportingDir, 'coverage.json'
             if not global[coverageVar]?
-                return callback 'No coverage information was collected, exit without writing coverage information'
+                return callback('No coverage information was collected, exit without writing coverage information', null)
             else
                 cov = global[coverageVar]
 
             mkdirp.sync reportingDir
             console.log '============================================================================='
             console.log "Writing coverage object [#{file}]"
-            fs.writeFileSync file, (JSON.stringify cov), 'utf8'
+            fs.writeFileSync file, (JSON.stringify cov), 'utf8' unless opts.headless
             collector = new istanbul.Collector
             collector.add cov
             console.log "Writing coverage reports at [#{reportingDir}]"
             console.log '============================================================================='
             report.writeReport collector, yes for report in reports
-            return callback()
- 
+            return callback(null, cov)
+
         if opts?.files?.include
           if typeof opts.files.include is 'string'
             # Handle single value case
